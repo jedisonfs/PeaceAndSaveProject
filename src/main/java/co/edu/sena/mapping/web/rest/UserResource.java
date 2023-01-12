@@ -20,7 +20,7 @@ public class UserResource {
 
     @GetMapping("/user/{login}")
     public ResponseEntity<User> getByLoginUser(@PathVariable String login) {
-        User user = userRepository.findByLogin(login);
+        User user = userRepository.findByLogin(login).get();
         return ResponseEntity.ok().body(user);
     }
 

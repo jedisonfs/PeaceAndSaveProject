@@ -3,21 +3,27 @@ package co.edu.sena.mapping.service.impl;
 import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
     }
 
     /*
@@ -39,9 +45,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User> save(User user) {
-        Optional<User> newUser = userRepository.save(user);
-        return newUser;
+    public User save(User user) {
+        log.info("Saving new user {} to the database", user.getLogin());
+        user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
+
+        return userRepository.save(user);
     }
 
     @Override
@@ -64,5 +72,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public Optional<User> findById(int id) {
         return Optional.empty();
     }
+
 
 }

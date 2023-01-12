@@ -1,12 +1,15 @@
 package co.edu.sena.mapping.domain;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.*;
+import java.io.Serializable;
 
 @Entity
-public class Roles{
+@Table(name = "roles", schema = "surrogate")
+public class Roles implements Serializable {
 
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     private String role;
@@ -26,4 +29,5 @@ public class Roles{
     public void setRole(String role) {
         this.role = role;
     }
+
 }

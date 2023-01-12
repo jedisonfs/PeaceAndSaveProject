@@ -10,7 +10,7 @@ import java.util.Optional;
 @Service
 public interface UserService {
 
-    Optional<User> save(User user);
+    User save(User user);
 
     List<User> saveAll(Iterable users);
 
