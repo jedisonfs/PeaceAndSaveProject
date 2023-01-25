@@ -21,6 +21,14 @@ import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
+/*
+Esta clase nos permite crear el TOKEN de acceso y los filtros indicaran si se autoriza el ingreso del usuario
+a la aplicaicon o no
+y ademas nos permite darle continuidad al usuario que esta intentando ingresar
+para que puda utilizar las REQUEST, es decir si esta bien las credenciasles de username y password
+
+En la CLASE UsernamePasswordAuthenticationFilter -> Es donde esta definido la ruta de la pagina de LOGIN
+ */
 @Slf4j
 public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 

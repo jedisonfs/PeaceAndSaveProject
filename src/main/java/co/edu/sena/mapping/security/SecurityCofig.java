@@ -1,6 +1,7 @@
 package co.edu.sena.mapping.security;
 
 import co.edu.sena.mapping.security.filter.CustomAuthenticationFilter;
+import co.edu.sena.mapping.security.filter.CustomAuthorizationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -15,6 +16,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import static org.springframework.http.HttpMethod.GET;
+import static org.springframework.http.HttpMethod.POST;
 
 @Configuration
 @EnableWebSecurity
@@ -23,7 +28,7 @@ public class SecurityCofig extends WebSecurityConfigurerAdapter {
     private UserDetailsService userDetailsService;
     private BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    public SecurityCofig(UserDetailsService userDetailsService,@Qualifier("passwordEncoder") BCryptPasswordEncoder bCryptPasswordEncoder) {
+    public SecurityCofig(UserDetailsService userDetailsService, @Qualifier("passwordEncoder") BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userDetailsService = userDetailsService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
     }
@@ -46,11 +51,24 @@ public class SecurityCofig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+        /*
+        Hacer ruta de pagina de LOGIN personalizada esto se hace creando una objetos de la clase de FILTER
+         */
+
+        CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
+        customAuthenticationFilter.setFilterProcessesUrl("/api/login/**"); // Ruta personalizada del LOGIN
+
+
         http.csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().anyRequest().permitAll();
-        http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
+        http.authorizeRequests().antMatchers(GET, "/api//user/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().antMatchers(POST, "/api//user/**").hasAnyAuthority("ROLE_USER");
+        http.authorizeRequests().anyRequest().authenticated(); // Valida que esten autenticacdos los que utilizan este Request
+        // Clase donde esta configurado los filtros que validan los datos del usuario y la URL del Login
+        http.addFilter(customAuthenticationFilter);
+        http.addFilterBefore(new CustomAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
 }
