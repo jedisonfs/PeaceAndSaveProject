@@ -3,6 +3,7 @@ package co.edu.sena.mapping.security;
 import co.edu.sena.mapping.security.filter.CustomAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,10 +20,24 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SecurityCofig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
     private UserDetailsService userDetailsService;
-    @Autowired
     private BCryptPasswordEncoder bCryptPasswordEncoder;
+
+    public SecurityCofig(UserDetailsService userDetailsService,@Qualifier("passwordEncoder") BCryptPasswordEncoder bCryptPasswordEncoder) {
+        this.userDetailsService = userDetailsService;
+        this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+    }
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
+//    @Bean("userDetailsService")
+//    public UserDetailsService userDetailsService() {
+//        return super.userDetailsService();
+//    }
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
@@ -38,19 +53,4 @@ public class SecurityCofig extends WebSecurityConfigurerAdapter {
         http.addFilter(new CustomAuthenticationFilter(authenticationManagerBean()));
     }
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
-
-    @Bean
-    PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    public UserDetailsService userDetailsService() {
-        return super.userDetailsService();
-    }
 }

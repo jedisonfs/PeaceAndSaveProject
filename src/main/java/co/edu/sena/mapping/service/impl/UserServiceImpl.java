@@ -3,6 +3,7 @@ package co.edu.sena.mapping.service.impl;
 import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.repository.UserRepository;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -10,11 +11,15 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+@Service
+@Transactional
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
 
@@ -59,18 +64,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public Optional<User> findByLogin(String login) {
-        return Optional.empty();
+    public User findByLogin(String login) {
+        return null;
     }
 
     @Override
-    public Optional<List<User>> findAll() {
-        return Optional.empty();
+    public List<User> findAll() {
+        return null;
     }
 
     @Override
-    public Optional<User> findById(int id) {
-        return Optional.empty();
+    public User findById(int id) {
+        return null;
     }
 
 

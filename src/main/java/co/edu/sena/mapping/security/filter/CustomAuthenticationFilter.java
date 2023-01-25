@@ -36,7 +36,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
         String username = request.getParameter("username");
-        String password = request.getParameter("username");
+        String password = request.getParameter("password");
         log.info("Username is: {}", username);
         log.info("Password is: {}", password);
 
@@ -45,7 +45,7 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
         //Se utiliza este AuthenticacionManager para pasarlo al
         //autentiar al usuario que esta intentando iniciar sesion
-        return super.attemptAuthentication(request, response);
+        return authenticationManager.authenticate(authenticationToken);
     }
 
 
