@@ -2,7 +2,9 @@ package co.edu.sena.mapping.security.filter;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -16,9 +18,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Date;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,10 +65,10 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         Algorithm algorithm = Algorithm.HMAC256("secret".getBytes());
 
         /**
-            Crear el token, con el Subject(datos del usuario)
-            ExpiresAt -> Tiempo de expiracion
-            Issuer -> Emisor quien genera el token
-            Claim -> El que contien todas las partes del token
+         Crear el token, con el Subject(datos del usuario)
+         ExpiresAt -> Tiempo de expiracion
+         Issuer -> Emisor quien genera el token
+         Claim -> El que contien todas las partes del token
          **/
         String access_token = JWT.create()
                 .withSubject(user.getUsername())
@@ -92,6 +92,19 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         response.setHeader("access_token", access_token);
         response.setHeader("refresh_token", refresh_token);
 
+        /*
+        Este sera donde se alamcene el token de acceso y refresh
+         */
+        Map<String, String> tokens = new HashMap<>();
+        tokens.put("access_token", access_token);
+        tokens.put("refresh_token", refresh_token);
 
+        /*
+        ESTABLECER LA RESPUESTA SEA DE TIPO JSON
+        Este guardara el token en la respuesta de la solicitud de inicios de sesion LOGIN
+         */
+
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(), tokens);
     }
 }
