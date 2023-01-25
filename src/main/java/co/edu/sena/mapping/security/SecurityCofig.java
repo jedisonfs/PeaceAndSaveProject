@@ -55,14 +55,13 @@ public class SecurityCofig extends WebSecurityConfigurerAdapter {
         /*
         Hacer ruta de pagina de LOGIN personalizada esto se hace creando una objetos de la clase de FILTER
          */
-
         CustomAuthenticationFilter customAuthenticationFilter = new CustomAuthenticationFilter(authenticationManagerBean());
         customAuthenticationFilter.setFilterProcessesUrl("/api/login/**"); // Ruta personalizada del LOGIN
-
 
         http.csrf().disable()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+        http.authorizeRequests().antMatchers("/api/login/**", "/api/token/refresh").permitAll();
         http.authorizeRequests().antMatchers(GET, "/api//user/**").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().antMatchers(POST, "/api//user/**").hasAnyAuthority("ROLE_USER");
         http.authorizeRequests().anyRequest().authenticated(); // Valida que esten autenticacdos los que utilizan este Request

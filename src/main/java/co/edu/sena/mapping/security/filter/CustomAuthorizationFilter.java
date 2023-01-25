@@ -49,7 +49,7 @@ public class CustomAuthorizationFilter extends OncePerRequestFilter {
         definido
          */
 
-        if (request.getServletPath().equals("/api/login/")) {
+        if (request.getServletPath().equals("/api/login/") || request.getServletPath().equals("/api/token/refresh")) {
             // El filtreChain le esta diciendo que si es correcta la ruta le permite contiunar con el siguiente filtro
             filterChain.doFilter(request, response);
         } else {

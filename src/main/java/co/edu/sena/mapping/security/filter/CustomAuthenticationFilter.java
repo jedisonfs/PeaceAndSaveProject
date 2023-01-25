@@ -97,9 +97,8 @@ public class CustomAuthenticationFilter extends UsernamePasswordAuthenticationFi
         se dirigira a este metodo y se agregan dos encabezados
         access_token y refresh_token
          */
-        response.setHeader("access_token", access_token);
-        response.setHeader("refresh_token", refresh_token);
-
+//        response.setHeader("access_token", access_token);
+//        response.setHeader("refresh_token", refresh_token);
         /*
         Este sera donde se alamcene el token de acceso y refresh
          */
