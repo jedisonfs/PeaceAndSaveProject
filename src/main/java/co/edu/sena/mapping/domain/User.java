@@ -1,6 +1,8 @@
 package co.edu.sena.mapping.domain;
 
 import co.edu.sena.mapping.domain.enums.*;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import java.util.*;
 import javax.persistence.*;
@@ -11,6 +13,8 @@ import javax.validation.constraints.NotNull;
         uniqueConstraints = {@UniqueConstraint(name = ("uk_login"), columnNames = {("login")}),
                 @UniqueConstraint(name = ("uk_email"), columnNames = ("email"))}
 )
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     private static final long serialVersionUID = 1L;
@@ -67,15 +71,20 @@ public class User {
     @Column(name = ("last_modified_date"), length = 50)
     private Date lastModifiedDateBy;
 
-    @JoinTable(
-            name = ("user_authority"), schema = ("surrogate"),
-            joinColumns = {@JoinColumn(name = ("user_id"), foreignKey = @ForeignKey(name = ("fk_user_id")), referencedColumnName = ("id"), nullable = false)},
-            inverseJoinColumns = @JoinColumn(name = ("authority_name"), foreignKey = @ForeignKey(name = ("fk_authority_name")), referencedColumnName = ("name"), nullable = false)
-    )
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Authority> authority;
+//    @JoinTable(
+//            name = ("user_authority"), schema = ("surrogate"),
+//            joinColumns = {@JoinColumn(name = ("user_id"), foreignKey = @ForeignKey(name = ("fk_user_id")), referencedColumnName = ("id"), nullable = false)},
+//            inverseJoinColumns = @JoinColumn(name = ("authority_name"), foreignKey = @ForeignKey(name = ("fk_authority_name")), referencedColumnName = ("name"), nullable = false)
+//    )
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    private List<Authority> authority;
 
-    @ManyToMany
+    @JoinTable(
+            name = "user_authority", schema = "surrogate",
+            joinColumns = {@JoinColumn(name = "user_id", foreignKey = @ForeignKey(name = "fk_user_id"), referencedColumnName = "id", nullable = false)},
+            inverseJoinColumns = {@JoinColumn(name = "role_id", foreignKey = @ForeignKey(name = "fk_role_id"), referencedColumnName = "id", nullable = false)}
+    )
+    @ManyToMany(fetch = FetchType.EAGER)
     private List<Roles> roles = new ArrayList<Roles>();
 
     @OneToOne(cascade = CascadeType.ALL, mappedBy = ("userId"))
@@ -193,15 +202,15 @@ public class User {
         this.lastModifiedDateBy = lastModifiedDateBy;
     }
 
-    public List<Authority> getAuthority() {
-        return authority;
-    }
+//    public List<Authority> getAuthority() {
+//        return authority;
+//    }
+//
+//    public void setAuthority(List<Authority> authority) {
+//        this.authority = authority;
+//    }
 
-    public void setAuthority(List<Authority> authority) {
-        this.authority = authority;
-    }
-
-    public List<Roles> getRoles() {
+    public Collection<Roles> getRoles() {
         return roles;
     }
 

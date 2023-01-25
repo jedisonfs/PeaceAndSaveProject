@@ -12,6 +12,8 @@ public interface UserService {
 
     List<User> saveAll(Iterable users);
 
+    void addToRoleToUser(String login, String role);
+
     User findByLogin(String login);
 
     List<User> findAll();

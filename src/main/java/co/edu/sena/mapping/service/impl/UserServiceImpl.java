@@ -1,11 +1,11 @@
 package co.edu.sena.mapping.service.impl;
 
+import co.edu.sena.mapping.domain.Roles;
 import co.edu.sena.mapping.domain.User;
+import co.edu.sena.mapping.repository.RoleRepository;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.repository.UserRepository;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Transactional
@@ -24,11 +23,14 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
     }
 
     /*
@@ -43,7 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(roles -> {
-            authorities.add(new SimpleGrantedAuthority(roles.getRole()));
+            authorities.add(new SimpleGrantedAuthority(roles.getName()));
         });
 
         return new org.springframework.security.core.userdetails.User(user.getLogin(), user.getPasswordHash(), authorities);
@@ -61,6 +63,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> saveAll(Iterable users) {
         List<User> insertBatch = userRepository.saveAll(users);
         return insertBatch;
+    }
+
+    public void addToRoleToUser(String login, String role) {
+        User user = userRepository.findUserByLogin(login).orElseThrow(() -> new UsernameNotFoundException("The username " + login + "not found"));
+        Roles rol = roleRepository.findByName(role);
+        user.getRoles().add(rol);
     }
 
     @Override

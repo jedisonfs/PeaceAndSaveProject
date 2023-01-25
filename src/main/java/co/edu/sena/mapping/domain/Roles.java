@@ -1,18 +1,24 @@
 package co.edu.sena.mapping.domain;
 
-import org.springframework.transaction.annotation.Transactional;
+
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 
 @Entity
 @Table(name = "roles", schema = "surrogate")
+@NoArgsConstructor
+@AllArgsConstructor
 public class Roles implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private String role;
+
+    private String name;
 
     public Long getId() {
         return id;
@@ -22,12 +28,12 @@ public class Roles implements Serializable {
         this.id = id;
     }
 
-    public String getRole() {
-        return role;
+    public String getName() {
+        return name;
     }
 
-    public void setRole(String role) {
-        this.role = role;
+    public void setName(String name) {
+        this.name = name;
     }
 
 }
