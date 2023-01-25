@@ -11,26 +11,26 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 
-public interface AuthorityRepository extends CrudRepository<Authority, String> {
+public interface AuthorityRepository  {
 
-    @Query("select a from  Authority a where a.name = ?1")
-    Authority findByName(String name);
+//    @Query("select a from  Authority a where a.name = ?1")
+//    Authority findByName(String name);
 
-    @Query("select a from Authority a")
-    List<Authority> findAll();
+//    @Query("select a from Authority a")
+//    List<Authority> findAll();
 
-    Authority save(Authority authority);
+//    Authority save(Authority authority);
 
-    Iterable<Authority> saveAll(Iterable listA);
+//    Iterable<Authority> saveAll(Iterable listA);
 
-    @Transactional
-    @Modifying
-    @Query("Update Authority a SET a.name = ?1 where a.name = ?2")
-    int updateAuthority(String name, String name2);
+//    @Transactional
+//    @Modifying
+//    @Query("Update Authority a SET a.name = ?1 where a.name = ?2")
+//    int updateAuthority(String name, String name2);
 
-    boolean existsByName(String name);
+//    boolean existsByName(String name);
 
-    void deleteByName(String name);
+//    void deleteByName(String name);
 
-    void deleteAll(Iterable authority);
+//    void deleteAll(Iterable authority);
 }

@@ -1,6 +1,6 @@
 package co.edu.sena.mapping.repository;
 
-import co.edu.sena.mapping.domain.enums.Condition;
+//import co.edu.sena.mapping.domain.enums.Condition;
 import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
@@ -13,8 +13,8 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
+//@SpringBootTest
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RegionalRepositoryTest {
 
 //    @Autowired
