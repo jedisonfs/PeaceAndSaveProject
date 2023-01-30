@@ -5,6 +5,8 @@ import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.repository.RoleRepository;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.repository.UserRepository;
+import co.edu.sena.mapping.service.dto.UserDTO;
+import co.edu.sena.mapping.service.mapper.UserDTOMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,8 +18,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
-@Service
+@Service("serviceUser")
 @Transactional
 @Slf4j
 public class UserServiceImpl implements UserService, UserDetailsService {
@@ -25,12 +28,14 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserDTOMapper userDTOMapper;
 
 
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.roleRepository = roleRepository;
+        this.userDTOMapper = userDTOMapper;
     }
 
     /*
@@ -40,8 +45,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
      */
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findUserByLogin(username)
-                .orElseThrow(() -> new UsernameNotFoundException("The username " + username + "not found"));
+        User user = userRepository.findUserByLogin(username).orElseThrow(() -> new UsernameNotFoundException("The username " + username + "not found"));
 
         List<SimpleGrantedAuthority> authorities = new ArrayList<>();
         user.getRoles().forEach(roles -> {
@@ -52,7 +56,7 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User save(User user) {
+    public User saveUser(User user) {
         log.info("Saving new user {} to the database", user.getLogin());
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 
@@ -60,31 +64,49 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<User> saveAll(Iterable users) {
-        List<User> insertBatch = userRepository.saveAll(users);
-        return insertBatch;
+    public List<User> saveAllUsers(Iterable users) {
+        return userRepository.saveAll(users);
     }
 
-    public void addToRoleToUser(String login, String role) {
-        User user = userRepository.findUserByLogin(login).orElseThrow(() -> new UsernameNotFoundException("The username " + login + "not found"));
-        Roles rol = roleRepository.findByName(role);
-        user.getRoles().add(rol);
+//    public void addToRoleToUser(String login, String role) {
+//        User user = userRepository.findUserByLogin(login).orElseThrow(() -> new UsernameNotFoundException("The username " + login + "not found"));
+//        Roles rol = roleRepository.findByName(role);
+//        user.getRoles().add(rol);
+//    }
+
+    @Override
+    public UserDTO findByLogin(String login) {
+        return userRepository.findByLogin(login).map(userDTOMapper).orElseThrow(() -> new UsernameNotFoundException("Not found username" + login));
     }
 
     @Override
-    public User findByLogin(String login) {
-        return null;
+    public List<UserDTO> findAllUsers() {
+        List<UserDTO> users = userRepository.findAll().stream().map(userDTOMapper).collect(Collectors.toList());
+        return users;
     }
 
     @Override
-    public List<User> findAll() {
-        return null;
+    public UserDTO findUserById(int id) {
+        return userRepository.findById(id).map(userDTOMapper).orElseThrow(() -> new UsernameNotFoundException("Not found identification  " + id + " of user"));
     }
 
     @Override
-    public User findById(int id) {
-        return null;
+    public List<UserDTO> findUserByLoginLike(String search) {
+        return userRepository.findByLoginLike(search).stream().map(userDTOMapper).collect(Collectors.toList());
     }
 
+    @Override
+    public boolean existsByLogin(String login) {
+        return userRepository.existsByLogin(login);
+    }
+
+    @Override
+    public void deleteUserByLogin(String login) {
+        userRepository.deleteByLogin(login);
+        if (!userRepository.existsByLogin(login)) {
+            throw new UsernameNotFoundException(
+                    "Username not find in data base");
+        }
+    }
 
 }
