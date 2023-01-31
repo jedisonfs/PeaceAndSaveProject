@@ -81,8 +81,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
 
     @Override
     public List<UserDTO> findAllUsers() {
-        List<UserDTO> users = userRepository.findAll().stream().map(userDTOMapper).collect(Collectors.toList());
+        List<UserDTO> users = userRepository.findAll()
+                .stream().map(userDTOMapper)
+                .collect(Collectors.toList());
+
         return users;
+
+
+    }
+
+    @Override
+    public List<User> findAllUser() {
+        return userRepository.findAll();
     }
 
     @Override

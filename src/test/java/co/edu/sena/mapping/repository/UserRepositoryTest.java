@@ -1,9 +1,18 @@
 package co.edu.sena.mapping.repository;
 
+import co.edu.sena.mapping.domain.User;
+import co.edu.sena.mapping.domain.enums.Condition;
+import co.edu.sena.mapping.service.UserService;
+import co.edu.sena.mapping.service.dto.UserDTO;
+import co.edu.sena.mapping.service.mapper.UserDTOMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.checkerframework.checker.units.qual.A;
 import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 
 import java.util.ArrayList;
@@ -12,31 +21,41 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+@SpringBootTest
+@Slf4j
 class UserRepositoryTest {
 
     @Test
     void test() {
     }
 
-//    @Autowired
-////    UserRepository userRepository;
-//
-//    @Test
-//    @Order(1)
-//    void insert() {
-//        User user = new User();
-//        user.setId(1);
-////        user.setLogin("jedisonfs");
-//        user.setPasswordHash("123456789");
-//        user.setEmail("edisonferia5@gmail.com");
-//        user.setActivated(Condition.ACTIVO);
-//        user.setCreatedBy("Edison Feria");
-//        userRepository.save(user);
-//        User user1 = userRepository.findByLogin("jedisonfs");
-//        assertEquals(user1.getLogin(), user.getLogin());
-//
-//    }
-//
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    UserService userService;
+
+    @Autowired
+    UserDTOMapper userDTOMapper;
+
+    @Test
+    @Order(1)
+    void insert() {
+        User user = new User();
+        user.setId(1);
+        user.setLogin("jedisonfs");
+        user.setPasswordHash("$2a$10$b7765WgXtYEz2AfNx3ROwua9d7bgSHkS2TiYIl.8DSaozjXF9hIsm");
+        user.setEmail("edisonferia6@gmail.com");
+        user.setActivated(Condition.ACTIVO);
+        user.setCreatedBy("Edison Sanabria");
+        userRepository.save(user);
+        User user1 = userRepository.findByLogin("jedisonfs")
+                .orElseGet(() -> new User());
+        assertEquals(user1.getLogin(), user.getLogin());
+
+    }
+
+    //
 //    @Test
 //    @Order(2)
 //    void insertAll() {
@@ -63,12 +82,14 @@ class UserRepositoryTest {
 //
 //    }
 //
-//    @Test
+    @Test
 //    @Order(3)
-//    void findId() {
-//        User user = userRepository.findByLogin("jedisonfs");
-//        assertNotNull(user);
-//    }
+    void findId() {
+        UserDTO user = userService.findByLogin("jedisonfs");
+        log.info(user.toString());
+        log.info(user.getLogin());
+        assertNotNull(user);
+    }
 //
 //    @Test
 //    @Order(4)

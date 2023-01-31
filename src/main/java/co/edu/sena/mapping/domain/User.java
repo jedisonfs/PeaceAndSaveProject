@@ -3,6 +3,7 @@ package co.edu.sena.mapping.domain;
 import co.edu.sena.mapping.domain.enums.*;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import java.util.*;
 import javax.persistence.*;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
 )
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class User {
 
     private static final long serialVersionUID = 1L;

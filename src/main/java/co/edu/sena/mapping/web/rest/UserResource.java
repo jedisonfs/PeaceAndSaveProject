@@ -45,6 +45,7 @@ public class UserResource {
 
     private final UserService userService;
 
+    @Autowired
     public UserResource(@Qualifier("serviceUser") UserService userService) {
         this.userService = userService;
     }

@@ -19,6 +19,8 @@ public interface UserService {
 
     List<UserDTO> findAllUsers();
 
+    List<User> findAllUser();
+
     UserDTO findUserById(int id);
 
     List<UserDTO> findUserByLoginLike(String search);
