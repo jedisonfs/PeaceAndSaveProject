@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import sun.tracing.dtrace.DTraceProviderFactory;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

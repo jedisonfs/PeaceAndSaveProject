@@ -5,6 +5,7 @@ import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.repository.UserRepository;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.service.dto.UserDTO;
+import co.edu.sena.mapping.web.rest.exception.EmptyInputException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -32,6 +33,7 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
+import static org.springframework.http.HttpHeaders.EMPTY;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 
@@ -124,8 +126,11 @@ public class UserResource {
 
     @PostMapping("/user")
     public ResponseEntity<User> insertUser(@Valid @RequestBody User user) {
-        userRepository.save(user);
-        return ResponseEntity.ok().body(user);
+
+        if (user.getEmail().isEmpty() || user.getLogin().length() == 0) {
+            throw new EmptyInputException("601", "Input Fields are empty");
+        }
+        return ResponseEntity.ok().body(userService.addUser(user));
     }
 
     @PostMapping("/user/all")

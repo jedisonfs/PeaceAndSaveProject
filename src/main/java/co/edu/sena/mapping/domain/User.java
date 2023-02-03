@@ -1,6 +1,7 @@
 package co.edu.sena.mapping.domain;
 
 import co.edu.sena.mapping.domain.enums.*;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
@@ -58,19 +59,21 @@ public class User {
     @Column(name = ("created_by"), length = 50, nullable = false)
     private String createdBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = ("create_date"))
     private Date createdDate;
 
-    @Temporal(TemporalType.TIMESTAMP)
+    //JsonFormat nos permite enviar fechas con el formato 2023-02-02
+    @JsonFormat(pattern = "yyyy-MM-dd")
     @Column(name = ("reset_date"))
     private Date resetDate;
 
     @Column(name = ("last_modified_by"), length = 50)
     private String lastModifiedBy;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = ("last_modified_date"), length = 50)
+    //JsonFormat nos permite enviar fechas con el formato 2023-02-02
+    @JsonFormat(pattern = "yyyy-MM-dd")
+    @Column(name = ("last_modified_date"))
     private Date lastModifiedDateBy;
 
 //    @JoinTable(

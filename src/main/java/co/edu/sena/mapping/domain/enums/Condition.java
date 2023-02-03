@@ -2,8 +2,8 @@ package co.edu.sena.mapping.domain.enums;
 
 public enum Condition {
 
-	ACTIVO("Esta activo"),
-	INACTIVO("Esta in-activo");
+	ACTIVO("ACTIVO"),
+	INACTIVO("IN-ACTIVO");
 	
 	private String description;
 	

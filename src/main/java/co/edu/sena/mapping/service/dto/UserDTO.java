@@ -1,10 +1,12 @@
 package co.edu.sena.mapping.service.dto;
 
+import co.edu.sena.mapping.domain.Roles;
 import co.edu.sena.mapping.domain.enums.Condition;
 import lombok.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Getter
@@ -20,6 +22,7 @@ public class UserDTO {
     private Date createdDate;
     private String lasModifiedBy;
     private Date lastModifiedDateBy;
+    private List<Roles> roles;
 
 
     public UserDTO(Integer id, String login, String email, Condition activated, String createdBy, Date createdDate, String lastModifiedBy, Date lastModifiedDateBy) {

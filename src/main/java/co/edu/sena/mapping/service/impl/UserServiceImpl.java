@@ -16,7 +16,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -26,15 +28,12 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService, UserDetailsService {
 
     private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserDTOMapper userDTOMapper;
 
-
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, RoleRepository roleRepository, UserDTOMapper userDTOMapper) {
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder passwordEncoder, UserDTOMapper userDTOMapper) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
-        this.roleRepository = roleRepository;
         this.userDTOMapper = userDTOMapper;
     }
 
@@ -56,8 +55,11 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User saveUser(User user) {
+    public User addUser(User user) {
         log.info("Saving new user {} to the database", user.getLogin());
+
+//        user.setCreatedDate(new Date(format.format(user.getCreatedDate())));
+//        user.setLastModifiedDateBy(new Date(format.format(user.getLastModifiedDateBy())));
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 
         return userRepository.save(user);
@@ -86,8 +88,6 @@ public class UserServiceImpl implements UserService, UserDetailsService {
                 .collect(Collectors.toList());
 
         return users;
-
-
     }
 
     @Override

@@ -9,7 +9,7 @@ import java.util.List;
 @Component
 public interface UserService {
 
-    User saveUser(User user);
+    User addUser(User user);
 
     List<User> saveAllUsers(Iterable users);
 

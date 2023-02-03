@@ -1,5 +1,6 @@
 package co.edu.sena.mapping.service.mapper;
 
+import co.edu.sena.mapping.domain.Roles;
 import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.service.dto.UserDTO;
 import org.springframework.stereotype.Service;
@@ -41,6 +42,7 @@ public class UserDTOMapper implements Function<User, UserDTO> {
         userDTO.setCreatedDate(user.getCreatedDate());
         userDTO.setLasModifiedBy(user.getLastModifiedBy());
         userDTO.setLastModifiedDateBy(user.getLastModifiedDateBy());
+        userDTO.setRoles((List<Roles>) user.getRoles());
         return userDTO;
     }
 
