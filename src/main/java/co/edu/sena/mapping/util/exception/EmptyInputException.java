@@ -1,4 +1,4 @@
-package co.edu.sena.mapping.web.rest.exception;
+package co.edu.sena.mapping.util.exception;
 
 import org.springframework.stereotype.Component;
 

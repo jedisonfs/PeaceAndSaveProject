@@ -5,7 +5,7 @@ import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.repository.UserRepository;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.service.dto.UserDTO;
-import co.edu.sena.mapping.web.rest.exception.EmptyInputException;
+import co.edu.sena.mapping.util.exception.EmptyInputException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -17,10 +17,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
@@ -33,7 +29,6 @@ import java.util.stream.Collectors;
 
 import static java.util.Arrays.stream;
 import static org.springframework.http.HttpHeaders.AUTHORIZATION;
-import static org.springframework.http.HttpHeaders.EMPTY;
 import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 
