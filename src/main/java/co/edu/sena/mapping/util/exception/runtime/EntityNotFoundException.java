@@ -1,4 +1,4 @@
-package co.edu.sena.mapping.util.exception;
+package co.edu.sena.mapping.util.exception.runtime;
 
 
 import org.apache.commons.lang3.StringUtils;

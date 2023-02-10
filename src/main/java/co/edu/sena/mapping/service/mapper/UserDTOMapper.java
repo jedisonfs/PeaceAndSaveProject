@@ -40,10 +40,26 @@ public class UserDTOMapper implements Function<User, UserDTO> {
         userDTO.setActivited(user.getActivated());
         userDTO.setCreateBy(user.getCreatedBy());
         userDTO.setCreatedDate(user.getCreatedDate());
-        userDTO.setLasModifiedBy(user.getLastModifiedBy());
+        userDTO.setLastModifiedBy(user.getLastModifiedBy());
         userDTO.setLastModifiedDateBy(user.getLastModifiedDateBy());
         userDTO.setRoles((List<Roles>) user.getRoles());
         return userDTO;
+    }
+
+    public User apply(UserDTO userDTO) {
+
+        User user = new User();
+        user.setId(userDTO.getId());
+        user.setLogin(userDTO.getLogin());
+        user.setEmail(userDTO.getEmail());
+        user.setActivated(userDTO.getActivited());
+        user.setCreatedBy(userDTO.getCreateBy());
+        user.setCreatedDate(userDTO.getCreatedDate());
+        user.setLastModifiedBy(userDTO.getLastModifiedBy());
+        user.setLastModifiedDateBy(userDTO.getLastModifiedDateBy());
+        user.setRoles(userDTO.getRoles());
+
+        return user;
     }
 
 }

@@ -1,4 +1,4 @@
-package co.edu.sena.mapping.util.exception;
+package co.edu.sena.mapping.util.exception.runtime;
 
 import org.springframework.stereotype.Component;
 
@@ -17,6 +17,10 @@ public class EmptyInputException extends RuntimeException {
     public EmptyInputException(String errorCode, String errorMessage) {
         super();
         this.errorCode = errorCode;
+        this.errorMessage = errorMessage;
+    }
+
+    public EmptyInputException(String errorMessage) {
         this.errorMessage = errorMessage;
     }
 

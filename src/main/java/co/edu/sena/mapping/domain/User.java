@@ -27,22 +27,18 @@ public class User {
     @Column(name = ("id"), nullable = false)
     private Integer id;
 
-    @NotNull
     @Column(name = ("login"), length = 50, nullable = false)
     private String login;
 
-    @NotNull
     @Column(name = ("password_hash"), length = 60, nullable = false)
     private String passwordHash;
 
-    @NotNull
     @Column(name = ("email"), length = 191, nullable = false)
     private String email;
 
     @Column(name = ("image_url"), length = 256)
     private String imageUrl;
 
-    @NotNull
     @Column(name = ("activated"), nullable = false)
     private Condition activated;
 
@@ -55,7 +51,6 @@ public class User {
     @Column(name = ("reset_key"), length = 20)
     private String resetKey;
 
-    @NotNull
     @Column(name = ("created_by"), length = 50, nullable = false)
     private String createdBy;
 

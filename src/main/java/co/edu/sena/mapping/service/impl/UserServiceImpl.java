@@ -1,8 +1,6 @@
 package co.edu.sena.mapping.service.impl;
 
-import co.edu.sena.mapping.domain.Roles;
 import co.edu.sena.mapping.domain.User;
-import co.edu.sena.mapping.repository.RoleRepository;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.repository.UserRepository;
 import co.edu.sena.mapping.service.dto.UserDTO;
@@ -16,11 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static java.lang.String.format;
 
 @Service("serviceUser")
 @Transactional
@@ -55,54 +53,55 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public User addUser(User user) {
+    public UserDTO addUser(User user) {
         log.info("Saving new user {} to the database", user.getLogin());
-
-//        user.setCreatedDate(new Date(format.format(user.getCreatedDate())));
-//        user.setLastModifiedDateBy(new Date(format.format(user.getLastModifiedDateBy())));
         user.setPasswordHash(passwordEncoder.encode(user.getPasswordHash()));
 
-        return userRepository.save(user);
+        return userDTOMapper.apply(userRepository.save(user));
     }
 
     @Override
-    public List<User> saveAllUsers(Iterable users) {
+    public List<User> addAllUsers(Iterable users) {
         return userRepository.saveAll(users);
     }
 
-//    public void addToRoleToUser(String login, String role) {
-//        User user = userRepository.findUserByLogin(login).orElseThrow(() -> new UsernameNotFoundException("The username " + login + "not found"));
-//        Roles rol = roleRepository.findByName(role);
-//        user.getRoles().add(rol);
-//    }
-
     @Override
     public UserDTO findByLogin(String login) {
-        return userRepository.findByLogin(login).map(userDTOMapper).orElseThrow(() -> new UsernameNotFoundException("Not found username" + login));
+        return userRepository.findByLogin(login)
+                .map(userDTOMapper).orElseThrow(() -> new UsernameNotFoundException("Not found username" + login));
     }
 
     @Override
     public List<UserDTO> findAllUsers() {
         List<UserDTO> users = userRepository.findAll()
-                .stream().map(userDTOMapper)
+                .stream()
+                .map(userDTOMapper)
                 .collect(Collectors.toList());
-
         return users;
     }
 
     @Override
-    public List<User> findAllUser() {
-        return userRepository.findAll();
+    public List<UserDTO> findAllUser() {
+        return userRepository.findAll().stream().map(userDTOMapper).collect(Collectors.toList());
     }
 
     @Override
     public UserDTO findUserById(int id) {
-        return userRepository.findById(id).map(userDTOMapper).orElseThrow(() -> new UsernameNotFoundException("Not found identification  " + id + " of user"));
+        return userRepository.findById(id)
+                .map(userDTOMapper).orElseThrow(() -> {
+                    log.info("Not found identificaction , {} , of user", id);
+                    return new UsernameNotFoundException("Not found identification  " + id + " of user");
+                });
     }
 
     @Override
     public List<UserDTO> findUserByLoginLike(String search) {
         return userRepository.findByLoginLike(search).stream().map(userDTOMapper).collect(Collectors.toList());
+    }
+
+    public void updateUser(User user) {
+        userRepository.updateLogin(user.getLogin(), user.getId());
+        log.info(format("username [%s] ", user.getLogin()));
     }
 
     @Override
@@ -114,9 +113,18 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public void deleteUserByLogin(String login) {
         userRepository.deleteByLogin(login);
         if (!userRepository.existsByLogin(login)) {
+            log.info("Username not find in Data Base, {}", login);
             throw new UsernameNotFoundException(
                     "Username not find in data base");
         }
     }
 
+    public void deleteUserById(int id) {
+        if (!userRepository.existsById(id)) {
+            throw new UsernameNotFoundException(
+                    format("user with id [%s] not found", id)
+            );
+        }
+        userRepository.deleteById(id);
+    }
 }

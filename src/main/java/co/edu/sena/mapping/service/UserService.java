@@ -9,9 +9,9 @@ import java.util.List;
 @Component
 public interface UserService {
 
-    User addUser(User user);
+    UserDTO addUser(User user);
 
-    List<User> saveAllUsers(Iterable users);
+    List<User> addAllUsers(Iterable users);
 
 //    void addToRoleToUser(String login, String role);
 
@@ -19,7 +19,7 @@ public interface UserService {
 
     List<UserDTO> findAllUsers();
 
-    List<User> findAllUser();
+    List<UserDTO> findAllUser();
 
     UserDTO findUserById(int id);
 
@@ -28,5 +28,7 @@ public interface UserService {
     boolean existsByLogin(String login);
 
     void deleteUserByLogin(String login);
+
+    void deleteUserById(int id);
 
 }

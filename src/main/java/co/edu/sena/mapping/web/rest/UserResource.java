@@ -5,7 +5,7 @@ import co.edu.sena.mapping.domain.User;
 import co.edu.sena.mapping.repository.UserRepository;
 import co.edu.sena.mapping.service.UserService;
 import co.edu.sena.mapping.service.dto.UserDTO;
-import co.edu.sena.mapping.util.exception.EmptyInputException;
+import co.edu.sena.mapping.util.exception.runtime.EmptyInputException;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.JWTVerifier;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -18,11 +18,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -33,7 +35,8 @@ import static org.springframework.http.HttpStatus.FORBIDDEN;
 
 
 @RestController
-@RequestMapping("/api")
+@RequestMapping("/api/user/")
+@Validated
 @Slf4j
 public class UserResource {
 
@@ -107,46 +110,71 @@ public class UserResource {
         }
     }
 
-    @GetMapping("/user/{login}")
-    public ResponseEntity<UserDTO> getByLoginUser(@PathVariable String login) {
-        UserDTO user = userService.findByLogin(login);
-        return ResponseEntity.ok().body(user);
+    @GetMapping("findByLogin/{login}")
+    public ResponseEntity<UserDTO> getByLoginUser(@NotEmpty @PathVariable String login) {
+
+        if (login.isEmpty()) {
+            throw new EmptyInputException("Input value is empty, please enter a value");
+        }
+        return ResponseEntity.ok().body(userService.findByLogin(login));
     }
 
-    @GetMapping("/user/all")
+    @GetMapping("findByID/{id}")
+    public ResponseEntity<UserDTO> getByIdUser(@Validated @PathVariable int id) {
+
+        if (id == 0) {
+            throw new EmptyInputException(String.format("value the field ID: [%s] is empty ", id));
+        }
+
+        return ResponseEntity.ok().body(userService.findUserById(id));
+    }
+
+    @GetMapping("allUsers")
     public ResponseEntity<List<UserDTO>> getAllUser() {
         List<UserDTO> users = userService.findAllUsers();
         return ResponseEntity.ok().body(users);
     }
 
-    @PostMapping("/user")
-    public ResponseEntity<User> insertUser(@Valid @RequestBody User user) {
+    @PostMapping
+    public ResponseEntity<UserDTO> insertUser(@Valid @RequestBody User user) {
 
-        if (user.getEmail().isEmpty() || user.getLogin().length() == 0) {
-            throw new EmptyInputException("601", "Input Fields are empty");
+        if (user.getEmail().isEmpty() || user.getLogin().isEmpty()) {
+            throw new EmptyInputException("Input Fields are empty");
         }
         return ResponseEntity.ok().body(userService.addUser(user));
     }
 
-    @PostMapping("/user/all")
+    @PostMapping("addAll")
     public ResponseEntity<List<User>> insertAllUsers(@Valid @RequestBody List<User> users) {
-        userRepository.saveAll(users);
+        userService.addAllUsers(users);
         return ResponseEntity.ok().body(users);
     }
 
-    @PutMapping("/user")
+    @PutMapping
     public ResponseEntity<User> updateUser(@Valid @RequestBody User user) {
-        userRepository.save(user);
+        userService.addUser(user);
         return ResponseEntity.ok().body(user);
     }
 
     @ResponseStatus(HttpStatus.OK)
-    @DeleteMapping("/user/{id}")
+    @DeleteMapping("deleteById/{id}")
     public void deleteByIdUser(@PathVariable int id) {
-        userRepository.deleteById(id);
+        if (id == 0) {
+            throw new EmptyInputException(String.format("value the field ID: [%s] is empty ", id));
+        }
+        userService.deleteUserById(id);
     }
 
-    @DeleteMapping("/user")
+    @ResponseStatus(HttpStatus.OK)
+    @DeleteMapping("deleteByLogin/{login}")
+    public void deleteByUsername(@PathVariable String login) {
+        if (login.isEmpty()) {
+            throw new EmptyInputException("username is empty, please enter a value");
+        }
+        userService.deleteUserByLogin(login);
+    }
+
+    @DeleteMapping
     public ResponseEntity<Void> deleteAllUser() {
         userRepository.deleteAll();
         return ResponseEntity.ok().build();
